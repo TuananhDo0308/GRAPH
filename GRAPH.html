@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Graph</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+    <div class = "topnav">
+        <div class = "app_logo">
+            <img src="115.jpg" alt="app_logo"></a>
+            <div class="Name">GRAPH_PROJECT</div>
+        </div>
+        <ul class="left_topnav">
+            <li>
+                <button class="btn_share">
+                    Share
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="container">
+        <svg  xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" id="graph-container">
+            <defs>
+                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#ccc" stroke-width="1" />
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+        <div id="Lengthbox">
+            <label for="Lengthbox">Length</label>
+            <input type="number" id="LengthInput" name="Lengthbox" keypress>
+        </div>
+        <div id="Namebox">
+            <label for="Namebox">Name</label>
+            <input type="text" id="nameInput" name="Namebox" keypress>
+        </div>
+        <ul class="toolbar">
+            <li>
+                <i class='bx bx-plus' id="add" onclick="addNodeName()"></i>
+            </li>
+            <li>
+                <i class='bx bxs-right-top-arrow-circle' id="active" ></i>
+            </li>
+            <li>
+                <i class='bx bx-x' id="remove" onclick="toggleDeleteMode()" ></i>
+            </li>
+        </ul>
+    </div>
+
+    
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
