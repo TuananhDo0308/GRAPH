@@ -9,7 +9,12 @@ const bluePastel="#AEC6CF"
 function clearInput() { 
     inputbox.value = "";
 };
-  
+
+var modeIcon = document.getElementById("mode");
+
+modeIcon.addEventListener("click", function() {
+        window.location.href = "GRAPH2.html";
+    });
 function addNodeName() {
     if (namebox.style.display === "none") {
         namebox.style.display = "flex";
@@ -111,6 +116,8 @@ function updateNode(nodeName) {
       .enter()
       .append("circle")
       .attr("r", 7)
+      .attr("stroke-width", 2)
+      .style("stroke", "white")
       .attr("fill", mainColor)
       .on("click", selectNode);
 
@@ -275,5 +282,3 @@ function updateNode(nodeName) {
     d.fx = null;
     d.fy = null;
   }
-
-  initializeGraph();
