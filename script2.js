@@ -112,7 +112,7 @@ var simulation = d3
   .force("center", d3.forceCenter(width / 2, height / 2))
   .force("link", d3.forceLink().id(d => d.name).distance(function(d) {
     var edgeName = d.source.name + "-" + d.target.name;
-    return edgeLengths[edgeName] * 20;
+    return Math.abs(edgeLengths[edgeName]) * 20;
   }))
   .on("tick", ticked);
 
@@ -233,30 +233,27 @@ function selectNode(d) {
         // If two nodes are selected, create a link from the first to the second
         lengthNodes.addEventListener("keypress", function(e){
           if(e.key === "Enter" ){
-            if(lengthNodes.value > 0){
-              const length = parseFloat(lengthNodes.value);
-              if (!isNaN(length) && selectedNodes[0] !== selectedNodes[1]) {
-                
-                const sourceNode = selectedNodes[0];
-                const targetNode = selectedNodes[1];
-                const link = { source: sourceNode, target: targetNode };
-                graphData.links.push(link);
-                edgeLengths[link.source.name + "-" + link.target.name] = length;
-                //Test matrix
-                const adjacencyMatrix = createAdjacencyMatrix(graphData.nodes, edgeLengths);
-                console.log(adjacencyMatrix);
+            const length = parseFloat(lengthNodes.value);
+            if (!isNaN(length) && selectedNodes[0] !== selectedNodes[1]) {
+              const sourceNode = selectedNodes[0];
+              const targetNode = selectedNodes[1];
+              const link = { source: sourceNode, target: targetNode };
+              graphData.links.push(link);
+              edgeLengths[link.source.name + "-" + link.target.name] = length;
+              //Test matrix
+              const adjacencyMatrix = createAdjacencyMatrix(graphData.nodes, edgeLengths);
+              console.log(adjacencyMatrix);
 
-                svg.selectAll("*").remove();
-                initializeGraph();
-                simulation.force("link").links(graphData.links);
-                simulation.alpha(1).restart();
-              }
-              lengthbox.style.display = "none";
-              lengthNodes.value = "";
-              selectedNodes = [];
-              // Clear the selection
-              nodes.attr("fill", mainColor);
+              svg.selectAll("*").remove();
+              initializeGraph();
+              simulation.force("link").links(graphData.links);
+              simulation.alpha(1).restart();
             }
+            lengthbox.style.display = "none";
+            lengthNodes.value = "";
+            selectedNodes = [];
+            // Clear the selection
+            nodes.attr("fill", mainColor);
           }
         })
       }
@@ -323,7 +320,8 @@ function ticked() {
       if (dx > 0) {
         // Link theo hướng từ trái sang phải, điều chỉnh `x` và `y` cho phù hợp
         return alongPathX + 25;
-      } else {
+      }
+      else {
         // Link theo hướng từ phải sang trái, điều chỉnh `x` và `y` cho phù hợp
         return alongPathX -30;
       }
@@ -370,5 +368,3 @@ function dragended(d) {
   d.fx = null;
   d.fy = null;
 }
-
-

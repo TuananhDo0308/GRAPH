@@ -117,7 +117,7 @@ var simulation = d3
   .force("center", d3.forceCenter(width / 2, height / 2))
   .force("link", d3.forceLink(graphData.links).id(d => d.name).distance(function(d) {
     var edgeName = d.source.name + "-" + d.target.name;
-    return edgeLengths[edgeName] * 20;
+    return Math.abs(edgeLengths[edgeName]) * 20;
   }))
   .on("tick", ticked);
 
@@ -225,7 +225,6 @@ function selectNode(d) {
         // If two nodes are selected, create a link from the first to the second
         lengthNodes.addEventListener("keypress", function(e){
           if(e.key === "Enter" ){
-            if(lengthNodes.value > 0){
               const length = parseFloat(lengthNodes.value);
               if (!isNaN(length) && selectedNodes[0] !== selectedNodes[1]) {
                 const sourceNode = selectedNodes[0];
@@ -247,7 +246,6 @@ function selectNode(d) {
               selectedNodes = [];
               // Clear the selection
               nodes.attr("fill", mainColor);
-            }
           }
         })
       }
