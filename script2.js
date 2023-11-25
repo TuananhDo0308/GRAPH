@@ -72,9 +72,10 @@ var graphData = {
 
 function createAdjacencyMatrix(nodes, edgeLengths) {
   const matrix = [];
-  //Create a matrix of zeros with size is length of nodes
+  //Create a matrix of zeros and Infinities with size is length of nodes
   for (let i = 0; i < nodes.length; i++) {
-    matrix[i] = Array(nodes.length).fill(0);
+    matrix[i] = Array(nodes.length).fill(Infinity);
+    matrix[i][i] = 0;
   }
 
   // Fill the matrix with edge lengths
@@ -87,6 +88,109 @@ function createAdjacencyMatrix(nodes, edgeLengths) {
   }
 
   return matrix;
+}
+function fordBellman(adjacencyMatrix, startNode, distances, paths) {
+  const numVertices = adjacencyMatrix.length;
+
+  distances[startNode] = 0;
+  paths[startNode] = [startNode];
+
+  // Cập nhật distances và paths
+  for (let i = 0; i < numVertices - 1; i++) {
+    for (let u = 0; u < numVertices; u++) {
+      for (let v = 0; v < numVertices; v++) {
+        if (
+          adjacencyMatrix[u][v] !== Infinity &&
+          distances[u] + adjacencyMatrix[u][v] < distances[v]
+        ) {
+          distances[v] = distances[u] + adjacencyMatrix[u][v];
+          paths[v] = [...paths[u], v];
+        }
+      }
+    }
+  }
+
+  // Kiểm tra chu trình âm
+  for (let u = 0; u < numVertices; u++) {
+    for (let v = 0; v < numVertices; v++) {
+      if (
+        adjacencyMatrix[u][v] !== Infinity &&
+        distances[u] + adjacencyMatrix[u][v] < distances[v]
+      ) {
+        console.log("The graph contains a negative-weight cycle !!!");
+        return false;
+      }
+    }
+  }
+
+  // Sua lai paths dung ten dinh
+  paths[startNode][1] = paths[startNode][0];
+  for (let i = 0; i < paths.length; i++)
+    for (let j = 0; j < paths[i].length; j++)
+      paths[i][j] = graphData.nodes[paths[i][j]].name;
+  return true;
+}
+
+function printFordBellman(startNode, distances, paths) {
+  console.log("FORD BELLMAN");
+  for (let i = 0; i < paths.length; i++) {
+    const pathString = paths[i].join(" -> ");
+    console.log(`${pathString} : ${distances[i]}`);
+  }
+}
+function printPrim(edgesAdded, adjacencyMatrix, minCost, startVertex) {
+  startVertex = graphData.nodes[startVertex].name;
+  // startVertex = graphData.node[startVertex].name;
+  console.log(`The Prim algorithm has a starting vertex at ${startVertex}. The order in which edges are added is as follows:`);
+  edgesAdded.forEach((edge, index) => {
+    const [x, y] = edge;
+    const sourceIndex = graphData.nodes.findIndex((node) => x == node.name);
+    const targetIndex = graphData.nodes.findIndex((node) => y == node.name);
+    const cost = adjacencyMatrix[sourceIndex][targetIndex];
+    console.log(`Edge ${index + 1}: (${x}, ${y}) cost: ${cost}`);
+  });
+  console.log(`Minimum cost = ${minCost}`);
+}
+
+// Hàm thuật toán Prim
+function prim(adjacencyMatrix, startVertex, edgesAdded) {
+  const numberOfVertices = adjacencyMatrix.length;
+  const selected = new Array(numberOfVertices).fill(false);
+  selected[startVertex] = true;
+  let edgeCount = 0;
+  let minCost = 0;
+
+  while (edgeCount < numberOfVertices - 1) {
+    let min = Infinity;
+    let x = 0;
+    let y = 0;
+
+    for (let i = 0; i < numberOfVertices; i++) {
+      if (selected[i]) {
+        for (let j = 0; j < numberOfVertices; j++) {
+          if (!selected[j] && adjacencyMatrix[i][j]) {
+            if (min > adjacencyMatrix[i][j]) {
+              min = adjacencyMatrix[i][j];
+              x = i;
+              y = j;
+            }
+          }
+        }
+      }
+    }
+
+    selected[y] = true;
+    edgeCount++;
+    minCost += min;
+    edgesAdded.push([x, y]);
+  }
+
+  for(let i=0; i<edgesAdded.length; i++){
+      for(let j=0; j<edgesAdded[i].length; j++){
+        edgesAdded[i][j] = graphData.nodes[edgesAdded[i][j]].name;
+      }
+    }
+  return minCost;
 }
 
 function updateNode(nodeName) {
@@ -108,7 +212,7 @@ var deleteMode = false;
 
 var simulation = d3
   .forceSimulation()
-  .force("charge", d3.forceManyBody().strength(-60))
+  .force("charge", d3.forceManyBody().strength(-10))
   .force("center", d3.forceCenter(width / 2, height / 2))
   .force("link", d3.forceLink().id(d => d.name).distance(function(d) {
     var edgeName = d.source.name + "-" + d.target.name;
@@ -240,9 +344,23 @@ function selectNode(d) {
               const link = { source: sourceNode, target: targetNode };
               graphData.links.push(link);
               edgeLengths[link.source.name + "-" + link.target.name] = length;
+              
               //Test matrix
-              const adjacencyMatrix = createAdjacencyMatrix(graphData.nodes, edgeLengths);
+              const adjacencyMatrix = createAdjacencyMatrix(graphData.nodes,edgeLengths);
               console.log(adjacencyMatrix);
+
+              // FORD BELLMAN
+              const startNode = 0;
+              const distancesFordBellman = new Array(adjacencyMatrix.length).fill(Infinity);
+              const pathsFordBellman = new Array(adjacencyMatrix.length).fill(null).map(() => []);
+              if (fordBellman(adjacencyMatrix,startNode,distancesFordBellman,pathsFordBellman))
+                printFordBellman(startNode,distancesFordBellman,pathsFordBellman);
+
+              // PRIM
+              const edgesAdded = [];
+              const startVertex = 0;
+              const minCost = prim(adjacencyMatrix, startVertex, edgesAdded);
+              printPrim(edgesAdded, adjacencyMatrix, minCost, startVertex);
 
               svg.selectAll("*").remove();
               initializeGraph();
