@@ -446,3 +446,102 @@ function dragended(d) {
   d.fx = null;
   d.fy = null;
 }
+// Hàm lưu đồ thị vào tệp văn bản
+function saveGraphToFile() {
+  const graphText = generateGraphText();
+  const blob = new Blob([graphText], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "graph.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// Hàm tạo văn bản đại diện cho đồ thị
+function generateGraphText() {
+  let graphText = "";
+
+  // Thêm nodes vào văn bản
+  graphText += "Nodes:\n";
+  graphData.nodes.forEach((node) => {
+    graphText += `${node.name}\n`;
+  });
+
+  // Thêm links vào văn bản
+  graphText += "\nLinks:\n";
+  graphData.links.forEach((link) => {
+    graphText += `${link.source.name} ${link.target.name}\n`;
+  });
+
+  // Thêm độ dài cạnh vào văn bản
+  graphText += "\nEdge Lengths:\n";
+  graphData.links.forEach((link) => {
+    const edgeName = link.source.name + "-" + link.target.name;
+    graphText += `${edgeName} ${edgeLengths[edgeName]}\n`;
+  });
+
+  return graphText;
+}
+// Hàm tải đồ thị từ tệp văn bản
+function loadGraphFromFile(fileInput) {
+  const file = fileInput.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const graphText = e.target.result;
+      parseGraphText(graphText);
+    };
+
+    reader.readAsText(file);
+  }
+}
+
+// Hàm phân tích văn bản đại diện cho đồ thị
+function parseGraphText(graphText) {
+  // Xóa dữ liệu đồ thị hiện tại
+  graphData = { nodes: [], links: [] };
+  edgeLengths = {};
+
+  const lines = graphText.split("\n");
+  let currentSection = "";
+
+  lines.forEach((line) => {
+    line = line.trim();
+
+    if (line === "Nodes:" || line === "Links:" || line === "Edge Lengths:") {
+      currentSection = line;
+    } else if (line !== "") {
+      if (currentSection === "Nodes:") {
+        // Thêm nodes vào đồ thị
+        graphData.nodes.push({ name: line, x: width / 2, y: height / 2 });
+      } else if (currentSection === "Links:") {
+        // Thêm links vào đồ thị
+        const [sourceName, targetName] = line.split(" ");
+        const sourceNode = graphData.nodes.find((node) => node.name === sourceName);
+        const targetNode = graphData.nodes.find((node) => node.name === targetName);
+        if (sourceNode && targetNode) {
+          graphData.links.push({ source: sourceNode, target: targetNode });
+        }
+      } else if (currentSection === "Edge Lengths:") {
+        // Thêm độ dài cạnh vào đối tượng edgeLengths
+        const [edgeName, length] = line.split(" ");
+        edgeLengths[edgeName] = parseFloat(length);
+      }
+    }
+  });
+
+  // Vẽ lại đồ thị và khởi động lại mô phỏng
+  svg.selectAll("*").remove();
+  initializeGraph();
+  simulation.nodes(graphData.nodes);
+  simulation.force("link").links(graphData.links);
+  simulation.alpha(1).restart();
+}
+
+
+
+
+

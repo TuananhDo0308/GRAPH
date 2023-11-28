@@ -90,7 +90,27 @@
 .topnav li{
     background-color: var(--background);
 }
-
+.topnav .btn_upload{
+    cursor: pointer;
+    margin-left: 5px;
+    background-color: var(--detail);
+    border: none;
+    color: var(--background);
+    padding: 10px 25px;
+    border-radius: 400px;
+    text-align:center;
+    text-decoration: none;
+    display: flex;
+    font-size: 16px;
+    font-weight: 600;
+}
+.topnav .btn_upload:hover{
+    background-color: var(--main-color);
+    transition: 0.3s;
+}
+.topnav li{
+    background-color: var(--background);
+}
 
 
 /*_______container________*/

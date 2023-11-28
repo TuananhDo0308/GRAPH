@@ -5,6 +5,7 @@
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <input type="file" id="fileInput" style="display: none">
 </head>
 <body>
     <div class = "topnav">
@@ -17,8 +18,13 @@
         </div>
         <ul class="left_topnav">
             <li>
-                <button class="btn_share">
+                <button class="btn_share" onclick="saveGraphToFile()">
                     Share
+                </button>   
+            </li>
+            <li>
+                <button class="btn_upload" onclick="document.getElementById('fileInput').click()">
+                    Tải File Lên
                 </button>
             </li>
         </ul>
@@ -53,7 +59,7 @@
         </ul>
     </div>
 
-    
+    <input type="file" id="fileInput" onchange="loadGraphFromFile(this)">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="script2.js"></script>
