@@ -329,7 +329,15 @@ function saveGraphToFile() {
   a.click();
   document.body.removeChild(a);
 }
-
+//Ham chuyen tu van ban sang mang 2 chieu
+function parseGraphTextToArray(graphText) {
+  // Xử lý nội dung đọc từ tệp tin để tạo mảng 2 chiều
+  // Ví dụ: Split dữ liệu bằng dấu xuống dòng và dấu cách
+  const lines = graphText.trim().split('\n');
+  const graphDataArray = lines.map(line => line.trim().split(/\s+/));
+  
+  return graphDataArray;
+}
 // Hàm tải đồ thị từ tệp văn bản
 function loadGraphFromFile(fileInput) {
   const file = fileInput.files[0];
@@ -339,74 +347,71 @@ function loadGraphFromFile(fileInput) {
 
     reader.onload = function (e) {
       const graphText = e.target.result;
-      parseGraphText(graphText);
+      const graphDataArray = parseGraphTextToArray(graphText);
+      
+      parseGraphText(graphDataArray);
     };
 
     reader.readAsText(file);
+    fileInput.value = '';
   }
 }
 // Hàm tạo văn bản đại diện cho đồ thị
 function generateGraphText() {
-  let graphText = "";
+  var resultString = "";
 
   // Thêm nodes vào văn bản
-  graphText += "Nodes:\n";
   graphData.nodes.forEach((node) => {
-    graphText += `${node.name}\n`;
+    resultString += `${node.name} `;
   });
 
-  // Thêm links vào văn bản
-  graphText += "\nLinks:\n";
-  graphData.links.forEach((link) => {
-    graphText += `${link.source.name} ${link.target.name}\n`;
-  });
-
-  // Thêm độ dài cạnh vào văn bản
-  graphText += "\nEdge Lengths:\n";
-  graphData.links.forEach((link) => {
-    const edgeName = link.source.name + "-" + link.target.name;
-    graphText += `${edgeName} ${edgeLengths[edgeName]}\n`;
-  });
-
-  return graphText;
+  var adjacencyMatrix = createAdjacencyMatrix(graphData.nodes, edgeLengths);
+  
+  resultString += `\n`;
+  for (let i = 0; i < adjacencyMatrix.length; i++) {
+    for (let j = 0; j < adjacencyMatrix.length; j++)
+      if (adjacencyMatrix[i][j] == Infinity)
+        resultString += `0 `;
+      else
+        resultString += adjacencyMatrix[i][j] + ` `;
+    resultString += `\n`;
+  }
+  return resultString;
 }
 
-// Hàm phân tích văn bản đại diện cho đồ thị
-function parseGraphText(graphText) {
+// Hàm parseGraphText để vẽ đồ thị từ một mảng 2 chiều
+function parseGraphText(graphDataArray)
+{
+  // Xóa đồ thị hiện tại
+  svg.selectAll("*").remove();
+
   // Xóa dữ liệu đồ thị hiện tại
   graphData = { nodes: [], links: [] };
   edgeLengths = {};
 
-  const lines = graphText.split("\n");
-  let currentSection = "";
+  // Thêm nodes vào đồ thị
+  for (let i = 0; i < graphDataArray[1].length; i++) {
+    // Gán tên cho node
+    graphData.nodes.push({ name: graphDataArray[0][i], x: width / 2, y: height / 2 });
+  }
 
-  lines.forEach((line) => {
-    line = line.trim();
+  // Thêm links và edgeLengths từ mảng 2 chiều
+  for (let i = 1; i < graphDataArray.length; i++) {
+    for (let j = 0; j < graphDataArray[i].length; j++) {
+      const length = graphDataArray[i][j];
+      if (length != 0) {
+        const sourceNode = graphData.nodes[i - 1];
+        const targetNode = graphData.nodes[j];
+        graphData.links.push({ source: sourceNode, target: targetNode });
 
-    if (line === "Nodes:" || line === "Links:" || line === "Edge Lengths:") {
-      currentSection = line;
-    } else if (line !== "") {
-      if (currentSection === "Nodes:") {
-        // Thêm nodes vào đồ thị
-        graphData.nodes.push({ name: line, x: width / 2, y: height / 2 });
-      } else if (currentSection === "Links:") {
-        // Thêm links vào đồ thị
-        const [sourceName, targetName] = line.split(" ");
-        const sourceNode = graphData.nodes.find((node) => node.name === sourceName);
-        const targetNode = graphData.nodes.find((node) => node.name === targetName);
-        if (sourceNode && targetNode) {
-          graphData.links.push({ source: sourceNode, target: targetNode });
-        }
-      } else if (currentSection === "Edge Lengths:") {
-        // Thêm độ dài cạnh vào đối tượng edgeLengths
-        const [edgeName, length] = line.split(" ");
-        edgeLengths[edgeName] = parseFloat(length);
+        //Tạo tên cạnh và gán độ dài cạnh vào edgeLengths
+        const edgeName = `${sourceNode.name}-${targetNode.name}`;
+        edgeLengths[edgeName] = length;
       }
     }
-  });
+  }
 
   // Vẽ lại đồ thị và khởi động lại mô phỏng
-  svg.selectAll("*").remove();
   initializeGraph();
   simulation.nodes(graphData.nodes);
   simulation.force("link").links(graphData.links);
