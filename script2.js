@@ -543,6 +543,34 @@ function fordBellman(adjacencyMatrix, startNode, distances, paths) {
   for (let i = 0; i < paths.length; i++)
     for (let j = 0; j < paths[i].length; j++)
       paths[i][j] = graphData.nodes[paths[i][j]].name;
+
+  
+// Them dinh khong co duong di
+  for (let i = 0; i < graphData.nodes.length; i++) {
+    let nodeName = graphData.nodes[i].name;
+    let found = false;
+    // Duyệt qua từng đường đi trong paths
+    for (let j = 0; j < paths.length; j++) {
+      // Kiểm tra xem đường đi hiện tại có phải là mảng trống không
+      if (paths[j].length === 0) {
+        // Nếu là mảng trống, thêm giá trị mới vào
+        paths[j].push(paths[0][0], nodeName);
+        found = true; // Đánh dấu là đã tìm thấy và thêm vào mảng trống
+        break; // Không cần kiểm tra thêm, thoát khỏi vòng lặp nội bộ
+      } else if (paths[j].includes(nodeName)) {
+        // Nếu nodeName đã tồn tại trong đường đi, đánh dấu là đã tìm thấy
+        found = true;
+        break; // Thoát khỏi vòng lặp nội bộ
+      }
+    }
+    // Nếu sau khi kiểm tra tất cả các đường đi, nodeName không tồn tại trong bất kỳ đường đi nào
+    // và không có mảng trống nào được thêm vào
+    if (!found) {
+      // Thêm mảng mới vào cuối paths với paths[0][0] và nodeName
+      paths.push([paths[0][0], nodeName]);
+	    }
+	  }
+
   return true;
 }
 
@@ -550,7 +578,7 @@ function printFordBellman(startNode, distances, paths) {
   console.log("FORD BELLMAN");
   for (let i = 0; i < paths.length; i++) {
     const pathString = paths[i].join(" -> ");
-    console.log(`${pathString} : ${distances[i]}`);
+    addListItem(`${pathString} : ${distances[i]}`);
   }
 }
 //_______________________________________Prim_______________________________________
