@@ -60,7 +60,8 @@
     width: 50px;
     height: auto;
 }
-.topnav ul{
+
+.topnav .right_topnav {
     display: flex;
     list-style: none;
     justify-content: flex-end;
@@ -69,7 +70,7 @@
     background-color: var(--background);
 }
 
-.topnav .btn_share{
+.topnav .right_topnav .btn_share{
     cursor: pointer;
     margin-left: 5px;
     background-color: var(--detail);
@@ -83,34 +84,39 @@
     font-size: 16px;
     font-weight: 600;
 }
-.topnav .btn_share:hover{
+.topnav .right_topnav .btn_share:hover{
     background-color: var(--main-color);
     transition: 0.3s;
 }
-.topnav li{
-    background-color: var(--background);
-}
-.topnav .btn_upload{
-    cursor: pointer;
-    margin-left: 5px;
-    background-color: var(--detail);
-    border: none;
-    color: var(--background);
-    padding: 10px 25px;
-    border-radius: 400px;
-    text-align:center;
-    text-decoration: none;
+.topnav .mid_topnav{
     display: flex;
-    font-size: 16px;
-    font-weight: 600;
+    list-style: none;
+    justify-content: flex-end;
+    box-sizing: border-box;
 }
-.topnav .btn_upload:hover{
-    background-color: var(--main-color);
-    transition: 0.3s;
+.topnav .mid_topnav .run{
+    cursor:  pointer;
+    background-color: transparent;
+    border: transparent;
+    padding: 0px 15px ;
+    font-size: 13px;
+    font-weight: 500;
+}
+.topnav .mid_topnav .run:hover{
+    cursor:  pointer;
+    background-color: transparent;
+    border: transparent;
+    padding: 0px 15px ;
+    font-size: 13px;
+    color: var(--main-color);
+    font-weight: 500;
 }
 .topnav li{
     background-color: var(--background);
 }
+
+
+
 
 
 /*_______container________*/
@@ -145,7 +151,6 @@
     border-radius: 100px;
     padding: 5px 10px;
     width: 100px;
-
 }
 /*_______LengthBox________*/
 .container #Lengthbox{
@@ -174,8 +179,152 @@
     width: 100px;
 
 }
+/*_______Run_Algorithm_______*/
+.container .run_algorithm{
+    background-color: white; /* Đặt màu trắng */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    position:fixed;
+    width: 190px;
+    height: 160px;
+    top: 100px;
+    right: 0;
+    margin-right: 20px;
+    border-radius: 20px;
+    display: none;
+    flex-direction: column;
+}
+.container .run_algorithm .container_run{
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    background-color: transparent;
+    margin: 8px 0px 0px 20px;
+}
+.container .run_algorithm .Tilte{
+    background-color: white;
+   color: var(--main-color);
+   font-size: 20px;
+   font-weight: 700;
+   margin:10px 0px 0px 20px;
+   background-color: transparent;
+}
+.container .run_algorithm .container_run li{
+    font-size: 15px;
+    margin-top: 4px;
+    background-color: transparent;
+ }
+ .container .run_algorithm .container_run select{
+    font-size: 15px;
+    border-color: var(--main-color);
+    width: 90px;
+    border-width: 1.2px;
+    background-color: white;
+    margin-left: 5px;
+    border-radius: 1000px;
+    padding: 0px 5px;
+ }
+ .container .run_algorithm #Run{
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--main-color);
+    margin-top: 4px;
+    background-color: transparent;
+    height: 30px;
+    border-color: var(--main-color);
+    width: 80px;
+    margin-right: 20px;
+    margin-top: 10px;
+    border-radius: 1000px;
+    align-self: flex-end; 
+}
+.container .run_algorithm #Run i{
+    background-color: transparent;
+}
 
-
+.container .run_algorithm #Run:hover{
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    margin-top: 4px;
+    background-color: var(--main-color);
+    height: 30px;
+    border-color: transparent;
+    width: 80px;
+    margin-right: 20px;
+    margin-top: 10px;
+    border-radius: 1000px;
+    align-self: flex-end; 
+}
+/*_______Show_Run_Algorithm_______*/
+.container #showAlgorithm{
+    background-color: white; /* Đặt màu trắng */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    position:fixed;
+    width: 350px;
+    height: auto;
+    padding: 0px 0px 20px 0px;
+    top: 280px;
+    right: 0;
+    margin-right: 20px;
+    border-radius: 20px;
+    display: none;
+    flex-direction: column;
+}
+.container #showAlgorithm #titleShowAlgorithm{
+    margin: 0px 0px 0px 20px;
+    color: var(--main-color);
+    font-size: 20px;
+    font-weight: 600;
+    background-color: transparent;
+}
+.container #showAlgorithm  #closeShowAlgorithm{
+    height: 25px;
+    cursor: pointer;
+    width: 25px;
+    border: none;
+    margin: 5px 10px 0px 0px;
+    background-color: transparent;
+    color: black;
+    align-self:flex-end;
+    top:0;
+    font-size: 25px;
+}
+.container #showAlgorithm  #closeShowAlgorithm i{
+    background-color: transparent;
+}
+.container #showAlgorithm  #closeShowAlgorithm:hover{
+    height: 25px;
+    cursor: pointer;
+    width: 25px;
+    border: none;
+    margin: 5px 10px 0px 0px;
+    background-color: transparent;
+    color: var(--main-color);
+    align-self:flex-end;
+    top:0;
+    font-size: 25px;
+}
+.container #showAlgorithm ul{
+    margin: 10px 0px 0px 20px;
+    list-style: none;
+    width: 300px;
+    background-color: transparent;
+}
+.container #showAlgorithm li{
+    background-color: transparent;
+    font-size: 15px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.container #showAlgorithm li:hover{
+    background-color: transparent;
+    font-size: 15px;
+    margin-top: 10px;
+    color: var(--main-color);
+    cursor: pointer;
+}
 /*_______TOOL BAR________*/
 
 .container .toolbar {
@@ -210,7 +359,9 @@
     background-color: var(--background);
     color: grey;
     transition: 0.3s;
-    
+    display: flex;
+    align-items:center;
+    justify-content: center;
 }
 .container .toolbar i:hover{
     padding: 8px;

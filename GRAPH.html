@@ -15,15 +15,25 @@
                 <div class="Direct">UNDIRECTED</div>
             </div>
         </div>
-        <ul class="left_topnav">
+        <ul class="mid_topnav">
             <li>
-                <button class="btn_share" onclick="saveGraphToFile()">
-                    Share
+                <button class="run" onclick="runPrim()">
+                    Prim
                 </button>   
             </li>
             <li>
-                <button class="btn_upload" onclick="document.getElementById('fileInput').click()">
-                    Tải File Lên
+                <button class="run" onclick="runFordBellman()">
+                    Ford Bellman
+                </button>
+            </li>
+            <li>
+                <button class="run" onclick="document.getElementById('fileInput').click()">
+                    Upload
+                </button>
+            </li>
+            <li>
+                <button class="run" onclick="saveGraphToFile()">
+                    Share
                 </button>
             </li>
         </ul>
@@ -45,13 +55,51 @@
             <label for="Namebox">Name</label>
             <input type="text" id="nameInput" name="Namebox" keypress>
         </div>
+        <div class="run_algorithm" id="box_run_algorithm">
+              <label class="Tilte" id="title_algorithm">
+                    Ford Bellman
+              </label>
+            <ul class="container_run">
+              
+                <li class="input" >
+                    From:
+                    <select id="selectNodeFrom">
+                    </select>
+                </li>
+                <li class="input" >
+                    To:
+                    <select id="selectNodeTo">
+                        <option value="All" >All</option>
+                    </select>            
+            </ul>
+            <button id="Run" onclick="runAlgorithm()">
+                <i class='bx bx-play'></i>
+                Run
+            </button>
+        </div>
+        <div id="showAlgorithm">
+            <button onclick="closeRunBox()" id="closeShowAlgorithm">
+                <i class='bx bx-x'></i>
+            </button>
+            <label id="titleShowAlgorithm">
+            </label>
+            <ul id="showArea">
+         
+            </ul>
+            
+        </div>
+        
         <ul class="toolbar">
+           
             <li>
                 <i class='bx bx-plus' id="add" onclick="addNodeName()"></i>
             </li>
+
             <li>
                 <i class='bx bxs-minus-circle' id="mode" onclick="changeMode()"></i>
             </li>
+
+            
             <li>
                 <i class='bx bx-x' id="remove" onclick="toggleDeleteMode()" ></i>
             </li>
