@@ -228,23 +228,7 @@ function selectNode(d) {
               graphData.links.push(link);
               edgeLengths[link.source.name + "-" + link.target.name] = length;
               
-              //Test matrix
-              const adjacencyMatrix = createAdjacencyMatrix(graphData.nodes,edgeLengths);
-              console.log(adjacencyMatrix);
-
-              // FORD BELLMAN
-              const startNode = 0;
-              const distancesFordBellman = new Array(adjacencyMatrix.length).fill(Infinity);
-              const pathsFordBellman = new Array(adjacencyMatrix.length).fill(null).map(() => []);
-              if (fordBellman(adjacencyMatrix,startNode,distancesFordBellman,pathsFordBellman))
-                printFordBellman(startNode,distancesFordBellman,pathsFordBellman);
-
-              // PRIM
-              const edgesAdded = [];
-              const startVertex = 0;
-              const minCost = prim(adjacencyMatrix, startVertex, edgesAdded);
-              printPrim(edgesAdded, adjacencyMatrix, minCost, startVertex);
-
+           
               svg.selectAll("*").remove();
               initializeGraph();
               simulation.force("link").links(graphData.links);
@@ -497,7 +481,7 @@ function createAdjacencyMatrix(nodes, edgeLengths) {
     const targetIndex = nodes.findIndex(node => node === link.target);
     const edgeName = link.source.name + "-" + link.target.name;
     const length = edgeLengths[edgeName];
-    matrix[sourceIndex][targetIndex] = length;
+    matrix[sourceIndex][targetIndex] = parseInt(length);
   }
 
   return matrix;
@@ -576,66 +560,25 @@ function fordBellman(adjacencyMatrix, startNode, distances, paths) {
 
 function printFordBellman(startNode, distances, paths) {
   console.log("FORD BELLMAN");
-  for (let i = 0; i < paths.length; i++) {
-    const pathString = paths[i].join(" -> ");
-    addListItem(`${pathString} : ${distances[i]}`);
-  }
-}
-//_______________________________________Prim_______________________________________
+  showArea.innerHTML = "";
 
-function printPrim(edgesAdded, adjacencyMatrix, minCost, startVertex) {
-  startVertex = graphData.nodes[startVertex].name;
-  // startVertex = graphData.node[startVertex].name;
-  console.log(`The Prim algorithm has a starting vertex at ${startVertex}. The order in which edges are added is as follows:`);
-  edgesAdded.forEach((edge, index) => {
-    const [x, y] = edge;
-    const sourceIndex = graphData.nodes.findIndex((node) => x == node.name);
-    const targetIndex = graphData.nodes.findIndex((node) => y == node.name);
-    const cost = adjacencyMatrix[sourceIndex][targetIndex];
-    console.log(`Edge ${index + 1}: (${x}, ${y}) cost: ${cost}`);
-  });
-  console.log(`Minimum cost = ${minCost}`);
-}
-
-// Hàm thuật toán Prim
-function prim(adjacencyMatrix, startVertex, edgesAdded) {
-  const numberOfVertices = adjacencyMatrix.length;
-  const selected = new Array(numberOfVertices).fill(false);
-  selected[startVertex] = true;
-  let edgeCount = 0;
-  let minCost = 0;
-
-  while (edgeCount < numberOfVertices - 1) {
-    let min = Infinity;
-    let x = 0;
-    let y = 0;
-
-    for (let i = 0; i < numberOfVertices; i++) {
-      if (selected[i]) {
-        for (let j = 0; j < numberOfVertices; j++) {
-          if (!selected[j] && adjacencyMatrix[i][j]) {
-            if (min > adjacencyMatrix[i][j]) {
-              min = adjacencyMatrix[i][j];
-              x = i;
-              y = j;
-            }
-          }
+  if (getValueComboBox(selectNodesTo) === graphData.nodes.length) {
+    for (let i = 0; i < paths.length; i++) {
+      const pathString = paths[i].join(" -> ");
+      addListItem(`${pathString} : ${distances[i]}`);
+    }
+  } 
+  else {
+    for (let i = 0; i < paths.length; i++) {
+      const pathString = paths[i].join(" -> ");
+      if(pathString[ pathString.length-1]===selectNodesTo.value){
+        addListItem(`${pathString} : ${distances[i]}`);
+        if(distances[i]!="Infinity"){
+          colorClickedFordBellman(pathString);
         }
       }
     }
-
-    selected[y] = true;
-    edgeCount++;
-    minCost += min;
-    edgesAdded.push([x, y]);
   }
-
-  for(let i=0; i<edgesAdded.length; i++){
-      for(let j=0; j<edgesAdded[i].length; j++){
-        edgesAdded[i][j] = graphData.nodes[edgesAdded[i][j]].name;
-      }
-    }
-  return minCost;
 }
 
 //_______________________________________Selectbox_load_______________________________________
@@ -665,26 +608,6 @@ function loadComboBoxFordBellman() {
       selectNodesTo.appendChild(optionNodesTo);
   }
 }
-function loadComboBoxPrim() {
-  selectNodesFrom.innerHTML = '';
-  selectNodesTo.innerHTML = '';
-
-  // Add "All" option to selectNodesTo
-  var optionNodesToAll = document.createElement("option");
-  optionNodesToAll.value = "All";
-  optionNodesToAll.text = "All";
-  selectNodesTo.appendChild(optionNodesToAll);
-
-  // Add options to both selectNodesFrom and selectNodesTo
-  for (var i = 0; i < graphData.nodes.length; i++) {
-      // Option for selectNodesFrom
-      var optionNodesFrom = document.createElement("option");
-      optionNodesFrom.value = graphData.nodes[i].name;
-      optionNodesFrom.text = graphData.nodes[i].name;
-      selectNodesFrom.appendChild(optionNodesFrom);
-  }
-}
-
 var titleShowAlgorithm = document.getElementById("titleShowAlgorithm");
 var showAlgorithm = document.getElementById("showAlgorithm");
 var showArea=document.getElementById("showArea");
@@ -694,11 +617,10 @@ function addListItem(text)
   var liElement = document.createElement("li");
 
   liElement.textContent = text;
-  if(mode==="fordBellman"){
     liElement.onclick = function (event) {
       clickShowFordBellmanDetail(event);
     };
-  }
+
 
   showArea.appendChild(liElement);
 }
@@ -720,21 +642,28 @@ function clickShowFordBellmanDetail(event) {
   const clickedText = event.target.textContent;
   console.log("Clicked on item:", clickedText);
 
+  if(clickedText.split(" : ")[1]!="Infinity"){
+    colorClickedFordBellman(clickedText);
+  }
   // Xác định đường đi từ giá trị text
-  const selectedPath = clickedText.split(" : ")[0].split(" -> ");
-
-  colorClickedFordBellman(selectedPath);
+ 
 }
 
 function colorClickedFordBellman(selectedPath) {
-  // Tìm và đổi màu sắc của các link trong đường đi
-  svg.selectAll(".edge")
-    .filter(function (d) {
-      const sourceName = d.source.name;
-      const targetName = d.target.name;
-      return selectedPath.includes(sourceName) && selectedPath.includes(targetName);
-    })
-    .style("stroke", "red"); // Đổi màu thành màu đỏ hoặc màu sắc tùy ý
+  // Xóa màu đỏ trước khi tô màu mới
+  resetColor();
+  selectedPath = selectedPath.split(" : ")[0].split(" -> ")
+  // Tô màu cho các cạnh trên đường đi đã chọn
+  for (let i = 0; i < selectedPath.length - 1; i++) {
+    const sourceName = selectedPath[i];
+    const targetName = selectedPath[i + 1];
+
+    svg.selectAll(".edge")
+      .filter(function (d) {
+        return d.source.name === sourceName && d.target.name === targetName;
+      })
+      .style("stroke", "red"); // Đổi màu thành màu đỏ hoặc màu sắc tùy ý
+  }
 }
 
 
@@ -747,25 +676,7 @@ selectedEdge.style("stroke", "black");
 }
 
 //_______________________________________Run_algorithm_______________________________________
-var mode="none";
-function runPrim(){
-  var temp="Prim";
-  loadComboBoxPrim();
-  titleRunBox.textContent=temp;
-  if(runBox.style.display=="none"){
-    runBox.style.display="flex";
-    mode="prim";
-    titleShowAlgorithm.textContent="Prim";
-    
-  }
-  else{
-    mode="none";
-    resetColor();
-    runBox.style.display="none";
-    showAlgorithm.style.display="none";
-  }
 
-}
 function closeRunBox(){
   showAlgorithm.style.display="none";
 resetColor();

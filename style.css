@@ -37,6 +37,9 @@
     box-sizing: border-box;
     background-color: var(--background);
 }            
+.topnav .app_logo img{
+    background-color: var(--background);
+}            
 
 .topnav .app_logo .Name{
     background-color: var(--background);

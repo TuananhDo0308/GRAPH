@@ -438,8 +438,8 @@ function createAdjacencyMatrix(nodes, edgeLengths) {
     const targetIndex = nodes.findIndex((node) => node === link.target);
     const edgeName = link.source.name + "-" + link.target.name;
     const length = edgeLengths[edgeName];
-    matrix[sourceIndex][targetIndex] = length;
-    matrix[targetIndex][sourceIndex] = length; // Assuming undirected graph
+    matrix[sourceIndex][targetIndex] = parseInt(length);
+    matrix[targetIndex][sourceIndex] = parseInt(length); // Assuming undirected graph
   }
 
   return matrix;
