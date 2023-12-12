@@ -474,7 +474,7 @@ function fordBellman(adjacencyMatrix, startNode, distances, paths) {
         adjacencyMatrix[u][v] !== Infinity &&
         distances[u] + adjacencyMatrix[u][v] < distances[v]
       ) {
-        console.log("The graph contains a negative-weight cycle !!!");
+        addListItem("The graph contains a negative-weight cycle !!!");
         return false;
       }
     }
