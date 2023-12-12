@@ -538,7 +538,7 @@ function fordBellman(adjacencyMatrix, startNode, distances, paths) {
       // Kiểm tra xem đường đi hiện tại có phải là mảng trống không
       if (paths[j].length === 0) {
         // Nếu là mảng trống, thêm giá trị mới vào
-        paths[j].push(paths[0][0], nodeName);
+        paths[j].push(paths[startNode][0], nodeName);
         found = true; // Đánh dấu là đã tìm thấy và thêm vào mảng trống
         break; // Không cần kiểm tra thêm, thoát khỏi vòng lặp nội bộ
       } else if (paths[j].includes(nodeName)) {
@@ -551,7 +551,7 @@ function fordBellman(adjacencyMatrix, startNode, distances, paths) {
     // và không có mảng trống nào được thêm vào
     if (!found) {
       // Thêm mảng mới vào cuối paths với paths[0][0] và nodeName
-      paths.push([paths[0][0], nodeName]);
+      paths.push([paths[startNode][0], nodeName]);
 	    }
 	  }
 
