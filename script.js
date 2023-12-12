@@ -679,22 +679,28 @@ function clickShowFordBellmanDetail(event) {
   console.log("Clicked on item:", clickedText);
 
   // Xác định đường đi từ giá trị text
-  const selectedPath = clickedText.split(" : ")[0].split(" -> ");
 
-  colorClickedFordBellman(selectedPath);
+  colorClickedFordBellman(clickedText);
 }
 
 function colorClickedFordBellman(selectedPath) {
-  // Tìm và đổi màu sắc của các link trong đường đi
-  svg.selectAll(".edge")
+  // Xóa màu đỏ trước khi tô màu mới
+  resetColor();
+  selectedPath = selectedPath.split(" : ")[0].split(" -> ")
+  // Tô màu cho các cạnh trên đường đi đã chọn
+  for (let i = 0; i < selectedPath.length - 1; i++) {
+    const sourceName = selectedPath[i];
+    const targetName = selectedPath[i + 1];
+    svg.selectAll(".edge")
     .filter(function (d) {
-      const sourceName = d.source.name;
-      const targetName = d.target.name;
-      return selectedPath.includes(sourceName) && selectedPath.includes(targetName);
+      return (
+        (d.source.name === sourceName && d.target.name === targetName) ||
+        (d.source.name === targetName && d.target.name === sourceName)
+      );
     })
-    .style("stroke", "red"); // Đổi màu thành màu đỏ hoặc màu sắc tùy ý
+    .style("stroke", "red");
+  }
 }
-
 
 
 function resetColor(){
