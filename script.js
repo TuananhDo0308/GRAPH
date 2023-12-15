@@ -20,6 +20,7 @@ var modeIcon = document.getElementById("mode");
 modeIcon.addEventListener("click", function () {
   window.location.href = "GRAPH2.html";
 });
+
 //_______________________________________Draw_Graph_______________________________________
 function addNodeName() {
   if (namebox.style.display === "none") {
@@ -65,6 +66,12 @@ inputbox.addEventListener("keypress", function (e) {
       });
   }
 });
+
+// Hàm resetPage để làm mới trang
+function resetPage() {
+  // Reload lại trang
+  location.reload();
+}
 
 function inputLengthOpen() {
   lengthbox.style.display = "flex";

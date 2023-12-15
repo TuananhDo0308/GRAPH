@@ -39,6 +39,7 @@
 }            
 .topnav .app_logo img{
     background-color: var(--background);
+    cursor: pointer;
 }            
 
 .topnav .app_logo .Name{
@@ -341,7 +342,7 @@
     list-style: none; 
     display: flex; 
     justify-content: center; 
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     border-radius: 100px;
 }
 

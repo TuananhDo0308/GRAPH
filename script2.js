@@ -66,10 +66,17 @@ inputbox.addEventListener("keypress", function(e) {
     }
 });
 
+// Hàm resetPage để làm mới trang
+function resetPage() {
+  // Reload lại trang
+  location.reload();
+}
+
 function inputLengthOpen(){
   lengthbox.style.display = "flex";
   lengthNodes.focus();
 }
+
 var graphData = {
   nodes: [],
   links: [],
