@@ -17,7 +17,7 @@ function clearInput() {
 var modeIcon = document.getElementById("mode");
 
 modeIcon.addEventListener("click", function() {
-        window.location.href = "GRAPH.html";
+        window.location.href = "index.html";
     });
 function addNodeName() {
     if (namebox.style.display === "none") {
